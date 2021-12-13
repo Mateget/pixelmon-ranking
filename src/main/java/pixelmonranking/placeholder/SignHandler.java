@@ -2,21 +2,17 @@ package pixelmonranking.placeholder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.multiTurn.SkullBash;
 
-import net.minecraft.block.BlockSkull;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -24,8 +20,6 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -50,7 +44,23 @@ import pixelmonranking.utils.SkullUtils;
 
 public class SignHandler {
 	
+	public static void initSignUpdater() {
+		PixelmonRanking.log.info("Sign Updater Initialized");
+		Runnable signUpdaterRunnable = new Runnable() {
+		    public void run() {
+		    	Thread signsUdpaterThread = new Thread(() -> {
+				    setSigns();
+				});
+		    	signsUdpaterThread.start();
+		    }
+		};
+		ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+		exec.scheduleAtFixedRate(signUpdaterRunnable , 0, FileHandler.config.getUpdateTime(), TimeUnit.MINUTES);
+		
+	}
+	
 	public static void setSigns() {
+		PixelmonRanking.log.info("Updating Signs");
 		ArrayList<SignPlaceholder> signs =  FileHandler.config.getPlaceholders();
 			for(SignPlaceholder placeholderLoc : signs) {
 				switch (placeholderLoc.getRank()) {
@@ -116,7 +126,7 @@ public class SignHandler {
 			} 
 	}
 	
-	public static void updateSign(TopRank ranks, SignPlaceholder placeholder) {
+	public static void updateSign(TopRank ranks, SignPlaceholder placeholder) throws IOException {
 		WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(placeholder.getWorldID());
 		
 		if(placeholder.getSigns().size()<3)  {
@@ -180,45 +190,40 @@ public class SignHandler {
                             }
                         }
                         String response;
-                        try {
-                        	response = SkullUtils.executeGet(playerScore.getPlayer());
-                        	JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-							JsonElement id = jsonObject.get("id");
-							JsonElement nameJson = jsonObject.get("name");
-	    					JsonArray properties = (JsonArray) jsonObject.get("properties");
-	    					JsonObject texturesJson = properties.get(0).getAsJsonObject();
-	    					JsonElement textureValue = texturesJson.get("value");
-	    					
-                        	String skinBase64 = textureValue.getAsString();
+                        response = SkullUtils.executeGet(playerScore.getPlayer());
+						JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+						JsonElement id = jsonObject.get("id");
+						JsonElement nameJson = jsonObject.get("name");
+						JsonArray properties = (JsonArray) jsonObject.get("properties");
+						JsonObject texturesJson = properties.get(0).getAsJsonObject();
+						JsonElement textureValue = texturesJson.get("value");
+						
+						String skinBase64 = textureValue.getAsString();
 
-                            String uuid = String.format("%s-%s-%s-%s-%s", 
-                            		id.getAsString().substring(0, 8),
-                            		id.getAsString().substring(8, 12),
-                            		id.getAsString().substring(12, 16),
-                            		id.getAsString().substring(16, 20),
-                            		id.getAsString().substring(20, 32)
-                            );
+						String uuid = String.format("%s-%s-%s-%s-%s", 
+								id.getAsString().substring(0, 8),
+								id.getAsString().substring(8, 12),
+								id.getAsString().substring(12, 16),
+								id.getAsString().substring(16, 20),
+								id.getAsString().substring(20, 32)
+						);
 
-                        	String name = nameJson.getAsString();
-                        	
-                            head.setPlayerProfile(gameprofile);
-                            NBTTagCompound texture = new NBTTagCompound();
-                            texture.setString("Value", skinBase64);
-                            NBTTagList textures = new NBTTagList();
-                            textures.appendTag(texture);
-                            NBTTagCompound owner = new NBTTagCompound();
-                            owner.setString("Id", uuid.toString());
-                            owner.setString("Name", name);
-                            owner.setTag("Properties", textures);
-     
-                			NBTTagCompound tag = head.serializeNBT();
-                            tag.setTag("Owner", owner);
-                            PixelmonRanking.log.info("Tag : "+ tag.toString());
-                            head.handleUpdateTag(tag);
-                        } catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						String name = nameJson.getAsString();
+						
+						head.setPlayerProfile(gameprofile);
+						NBTTagCompound texture = new NBTTagCompound();
+						texture.setString("Value", skinBase64);
+						NBTTagList textures = new NBTTagList();
+						textures.appendTag(texture);
+						NBTTagCompound owner = new NBTTagCompound();
+						owner.setString("Id", uuid.toString());
+						owner.setString("Name", name);
+						owner.setTag("Properties", textures);
+    
+						NBTTagCompound tag = head.serializeNBT();
+						tag.setTag("Owner", owner);
+						//PixelmonRanking.log.info("Tag : "+ tag.toString());
+						head.handleUpdateTag(tag);
                         
                     }
 					world.notifyBlockUpdate(blockposHead, stateHead, stateHead, 3);

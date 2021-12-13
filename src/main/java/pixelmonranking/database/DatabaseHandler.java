@@ -1,5 +1,6 @@
 package pixelmonranking.database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -224,7 +225,12 @@ public class DatabaseHandler {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		  SignHandler.updateSign(ranks, placeholder);
+		  try {
+			SignHandler.updateSign(ranks, placeholder);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		});
 		sqlThread.start();
 	}

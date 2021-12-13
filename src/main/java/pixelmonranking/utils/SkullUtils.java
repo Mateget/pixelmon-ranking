@@ -14,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
+import pixelmonranking.PixelmonRanking;
 
 public class SkullUtils {
 	
@@ -26,30 +27,39 @@ public class SkullUtils {
 	    	return customHead;    	    
 	    }
 	 
-	 public static String executeGet(String username) throws IOException {
-		 	URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
-		 	StringBuilder result = new StringBuilder();
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+	 public static String executeGet(String username) {
+		 	URL url;
+		 	JsonElement id = null;
+			try {
+				url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
+				StringBuilder result = new StringBuilder();
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				for (String line; (line = reader.readLine()) != null;) {
 					result.append(line);
 				}
-			}
-			
-			JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
-			JsonElement id = jsonObject.get("id");
-			
-			url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + id.getAsString());
-			result = new StringBuilder();
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+				JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
+				id = jsonObject.get("id");
+				
+				if(id==null) {
+					PixelmonRanking.log.info("id is null" +id);
+					return null;
+				}
+				
+				url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + id.getAsString());
+				
+				result = new StringBuilder();
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				for (String line; (line = reader.readLine()) != null;) {
 					result.append(line);
 				}
+				return result.toString();
+			} catch (IOException e) {
+				return null;
 			}
-			return result.toString();
 		}
 
 }

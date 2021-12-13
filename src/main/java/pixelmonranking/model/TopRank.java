@@ -2,8 +2,6 @@ package pixelmonranking.model;
 
 import java.util.ArrayList;
 
-import pixelmonranking.PixelmonRanking;
-
 public class TopRank {
 	
 	private ArrayList<PlayerScore> players = new ArrayList<PlayerScore>();

@@ -32,8 +32,8 @@ public class RankDisplay  extends CommandBase{
 			switch (args[0]) {
 			case "update":
 				SignHandler.setSigns();
-				sender.sendMessage(new TextComponentString(TextFormatting.AQUA+"Plop update"));
-				break;
+				sender.sendMessage(new TextComponentString(TextFormatting.GREEN+"Sign Placeholder Updated !"));
+				return;
 			default:
 				break;
 			}

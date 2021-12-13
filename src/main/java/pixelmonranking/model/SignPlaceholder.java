@@ -5,8 +5,7 @@ import java.util.ArrayList;
 public class SignPlaceholder {
 	
 	private String rank = "capture";
-	private String subrank = "";
-	private String title ="&6Le plus de pokémon capturé";	
+	private String subrank = "";	
 	private int worldID =0 ;
 	private ArrayList<PlaceholderLocation> signs = new ArrayList<PlaceholderLocation>();
 	private ArrayList<PlaceholderLocation> heads = new ArrayList<PlaceholderLocation>();
@@ -35,10 +34,6 @@ public class SignPlaceholder {
 
 	public String getSubrank() {
 		return subrank;
-	}
-
-	public String getTitle() {
-		return title;
 	}
 
 	public int getWorldID() {

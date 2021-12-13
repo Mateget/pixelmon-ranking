@@ -19,6 +19,7 @@ import pixelmonranking.config.FileHandler;
 import pixelmonranking.database.DatabaseHandler;
 import pixelmonranking.event.MinecraftEvents;
 import pixelmonranking.event.PixelmonEvents;
+import pixelmonranking.placeholder.SignHandler;
 
 @Mod(
         modid = PixelmonRanking.MOD_ID,
@@ -59,6 +60,8 @@ public class PixelmonRanking {
         dblocation = e.getModConfigurationDirectory() + "/" + MOD_ID+"/data.db";
         DatabaseHandler.connect();
         DatabaseHandler.init();
+        
+        SignHandler.initSignUpdater();
 
         
     }
