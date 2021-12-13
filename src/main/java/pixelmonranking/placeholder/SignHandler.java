@@ -55,7 +55,7 @@ public class SignHandler {
 		    }
 		};
 		ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
-		exec.scheduleAtFixedRate(signUpdaterRunnable , 0, FileHandler.config.getUpdateTime(), TimeUnit.MINUTES);
+		exec.scheduleAtFixedRate(signUpdaterRunnable , 1, FileHandler.config.getUpdateTime(), TimeUnit.MINUTES);
 	}
 	
 	public static void setSigns() {
@@ -128,7 +128,6 @@ public class SignHandler {
 	
 	public static void updateSign(TopRank ranks, SignPlaceholder placeholder) throws IOException {
 		WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(placeholder.getWorldID());
-		
 		if(placeholder.getSigns().size()<3)  {
 			PixelmonRanking.log.info("Error updateSign " + placeholder.getRank() + " " + placeholder.getSubrank());
 			PixelmonRanking.log.info("3 Signs must be provided in config");
@@ -139,101 +138,110 @@ public class SignHandler {
 			PixelmonRanking.log.info("3 Heads must be provided in config");
 			return;
 		}
-		for(int i =0; i<3 ;i++) {
-			//Sign
-			BlockPos blockposSign = new BlockPos(placeholder.getSigns().get(i).getX(),placeholder.getSigns().get(i).getY(), placeholder.getSigns().get(i).getZ());	
-			IBlockState stateSign = world.getBlockState(blockposSign);
-			TileEntity tileEntitySign = world.getTileEntity(blockposSign);
-			if(tileEntitySign!=null ) {
-				if(tileEntitySign instanceof TileEntitySign) {
-					TileEntitySign sign = (TileEntitySign) tileEntitySign;
-					sign.markDirty();
-					sign.signText[0] = new TextComponentString(TextFormatting.WHITE+""+TextFormatting.STRIKETHROUGH+"------------");
-					sign.signText[3] = new TextComponentString(TextFormatting.WHITE+""+TextFormatting.STRIKETHROUGH+"------------");
-					PlayerScore playerScore = ranks.get(i);
-					if(playerScore!=null) {
-						sign.signText[1] = new TextComponentString(TextFormatting.GREEN+playerScore.getPlayer());
-						sign.signText[2] = new TextComponentString(TextFormatting.DARK_RED+""+playerScore.getScore());
+		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable() {
+			@Override
+			public void run() {
+				for(int i =0; i<3 ;i++) {
+					//Sign
+					BlockPos blockposSign = new BlockPos(placeholder.getSigns().get(i).getX(),placeholder.getSigns().get(i).getY(), placeholder.getSigns().get(i).getZ());	
+					IBlockState stateSign = world.getBlockState(blockposSign);
+					TileEntity tileEntitySign = world.getTileEntity(blockposSign);
+					if(tileEntitySign!=null ) {
+						if(tileEntitySign instanceof TileEntitySign) {
+							TileEntitySign sign = (TileEntitySign) tileEntitySign;
+							sign.markDirty();
+							sign.signText[0] = new TextComponentString(TextFormatting.WHITE+""+TextFormatting.STRIKETHROUGH+"------------");
+							sign.signText[3] = new TextComponentString(TextFormatting.WHITE+""+TextFormatting.STRIKETHROUGH+"------------");
+							PlayerScore playerScore = ranks.get(i);
+							if(playerScore!=null) {
+								sign.signText[1] = new TextComponentString(TextFormatting.GREEN+playerScore.getPlayer());
+								sign.signText[2] = new TextComponentString(TextFormatting.DARK_RED+""+playerScore.getScore());
+							} else {
+								sign.signText[1] = new TextComponentString(TextFormatting.GRAY+"No player");
+								sign.signText[2] = new TextComponentString(TextFormatting.GRAY+"");
+								
+							}
+							world.notifyBlockUpdate(blockposSign, stateSign, stateSign, 3);
+						}
 					} else {
-						sign.signText[1] = new TextComponentString(TextFormatting.GRAY+"No player");
-						sign.signText[2] = new TextComponentString(TextFormatting.GRAY+"");
-						
+						PixelmonRanking.log.info("TileEntity null : " + blockposSign.toString());
 					}
-					world.notifyBlockUpdate(blockposSign, stateSign, stateSign, 3);
+					//Head
+					BlockPos blockposHead = new BlockPos(placeholder.getHeads().get(i).getX(),placeholder.getHeads().get(i).getY(), placeholder.getHeads().get(i).getZ());	
+					IBlockState stateHead = world.getBlockState(blockposHead);
+					TileEntity tileEntityHead = world.getTileEntity(blockposHead);
+
+					if(tileEntityHead!=null ) {
+						if(tileEntityHead instanceof TileEntitySkull) {
+							TileEntitySkull head = (TileEntitySkull) tileEntityHead;
+							
+							PlayerScore playerScore = ranks.get(i);
+							if(playerScore!=null) {
+								
+											
+								ItemStack item = SkullUtils.getCustomHead(playerScore.getPlayer());
+								GameProfile gameprofile = null;
+
+		                        if (item.hasTagCompound())
+		                        {
+		                            NBTTagCompound nbttagcompound = item.getTagCompound();
+
+		                            if (nbttagcompound.hasKey("SkullOwner", 10))
+		                            {
+		                                gameprofile = NBTUtil.readGameProfileFromNBT(nbttagcompound.getCompoundTag("SkullOwner"));
+		                            }
+		                        }
+		                        String response;
+		                        response = SkullUtils.executeGet(playerScore.getPlayer());
+								JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+								JsonElement id = jsonObject.get("id");
+								JsonElement nameJson = jsonObject.get("name");
+								JsonArray properties = (JsonArray) jsonObject.get("properties");
+								JsonObject texturesJson = properties.get(0).getAsJsonObject();
+								JsonElement textureValue = texturesJson.get("value");
+								
+								String skinBase64 = textureValue.getAsString();
+
+								String uuid = String.format("%s-%s-%s-%s-%s", 
+										id.getAsString().substring(0, 8),
+										id.getAsString().substring(8, 12),
+										id.getAsString().substring(12, 16),
+										id.getAsString().substring(16, 20),
+										id.getAsString().substring(20, 32)
+								);
+
+								String name = nameJson.getAsString();
+								
+								head.setPlayerProfile(gameprofile);
+								NBTTagCompound texture = new NBTTagCompound();
+								texture.setString("Value", skinBase64);
+								NBTTagList textures = new NBTTagList();
+								textures.appendTag(texture);
+								NBTTagCompound owner = new NBTTagCompound();
+								owner.setString("Id", uuid.toString());
+								owner.setString("Name", name);
+								owner.setTag("Properties", textures);
+		    
+								NBTTagCompound tag = head.serializeNBT();
+								tag.setTag("Owner", owner);
+								//PixelmonRanking.log.info("Tag : "+ tag.toString());
+								head.handleUpdateTag(tag);
+		                        
+		                    }
+							world.notifyBlockUpdate(blockposHead, stateHead, stateHead, 3);
+						} else {
+							PixelmonRanking.log.info("Not a head"+ blockposHead.toString());
+						}
+					} else {
+						PixelmonRanking.log.info("TileEntity null : " + blockposHead.toString());
+					} 
 				}
-			} else {
-				PixelmonRanking.log.info("TileEntity null : " + blockposSign.toString());
+				
 			}
-			//Head
-			BlockPos blockposHead = new BlockPos(placeholder.getHeads().get(i).getX(),placeholder.getHeads().get(i).getY(), placeholder.getHeads().get(i).getZ());	
-			IBlockState stateHead = world.getBlockState(blockposHead);
-			TileEntity tileEntityHead = world.getTileEntity(blockposHead);
-
-			if(tileEntityHead!=null ) {
-				if(tileEntityHead instanceof TileEntitySkull) {
-					TileEntitySkull head = (TileEntitySkull) tileEntityHead;
-					
-					PlayerScore playerScore = ranks.get(i);
-					if(playerScore!=null) {
-						
-									
-						ItemStack item = SkullUtils.getCustomHead(playerScore.getPlayer());
-						GameProfile gameprofile = null;
-
-                        if (item.hasTagCompound())
-                        {
-                            NBTTagCompound nbttagcompound = item.getTagCompound();
-
-                            if (nbttagcompound.hasKey("SkullOwner", 10))
-                            {
-                                gameprofile = NBTUtil.readGameProfileFromNBT(nbttagcompound.getCompoundTag("SkullOwner"));
-                            }
-                        }
-                        String response;
-                        response = SkullUtils.executeGet(playerScore.getPlayer());
-						JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-						JsonElement id = jsonObject.get("id");
-						JsonElement nameJson = jsonObject.get("name");
-						JsonArray properties = (JsonArray) jsonObject.get("properties");
-						JsonObject texturesJson = properties.get(0).getAsJsonObject();
-						JsonElement textureValue = texturesJson.get("value");
-						
-						String skinBase64 = textureValue.getAsString();
-
-						String uuid = String.format("%s-%s-%s-%s-%s", 
-								id.getAsString().substring(0, 8),
-								id.getAsString().substring(8, 12),
-								id.getAsString().substring(12, 16),
-								id.getAsString().substring(16, 20),
-								id.getAsString().substring(20, 32)
-						);
-
-						String name = nameJson.getAsString();
-						
-						head.setPlayerProfile(gameprofile);
-						NBTTagCompound texture = new NBTTagCompound();
-						texture.setString("Value", skinBase64);
-						NBTTagList textures = new NBTTagList();
-						textures.appendTag(texture);
-						NBTTagCompound owner = new NBTTagCompound();
-						owner.setString("Id", uuid.toString());
-						owner.setString("Name", name);
-						owner.setTag("Properties", textures);
-    
-						NBTTagCompound tag = head.serializeNBT();
-						tag.setTag("Owner", owner);
-						//PixelmonRanking.log.info("Tag : "+ tag.toString());
-						head.handleUpdateTag(tag);
-                        
-                    }
-					world.notifyBlockUpdate(blockposHead, stateHead, stateHead, 3);
-				} else {
-					PixelmonRanking.log.info("Not a head"+ blockposHead.toString());
-				}
-			} else {
-				PixelmonRanking.log.info("TileEntity null : " + blockposHead.toString());
-			} 
-		}
+		});
+		
+		
+		
 		
 	}
 

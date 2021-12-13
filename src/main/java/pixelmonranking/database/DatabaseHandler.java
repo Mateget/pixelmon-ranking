@@ -151,7 +151,9 @@ public class DatabaseHandler {
 	
 	public static void query(String requet) {
 	       try {
-	           statement.executeUpdate(requet);
+	    	   Statement statement = connection.createStatement();
+	    	   statement.executeUpdate(requet);
+	    	   statement.closeOnCompletion();
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           System.out.println("Request error : " + requet);
@@ -160,7 +162,9 @@ public class DatabaseHandler {
 	   }
 	public static ResultSet queryWithResult(String requet) {
 	       try {
+	    	   Statement statement = connection.createStatement();
 	    	   ResultSet resultat = statement.executeQuery(requet);
+	    	   statement.closeOnCompletion();
 	    	   return resultat;
 	       } catch (SQLException e) {
 	           e.printStackTrace();
