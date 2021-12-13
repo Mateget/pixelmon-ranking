@@ -119,6 +119,8 @@ public class Rank extends CommandBase {
 				sender.sendMessage(new TextComponentString(getUsage(sender)));
 				break;
 			}
+    	} else {
+    		sender.sendMessage(new TextComponentString(getUsage(sender)));
     	}
     	
     }

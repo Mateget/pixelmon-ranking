@@ -56,73 +56,73 @@ public class SignHandler {
 		};
 		ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
 		exec.scheduleAtFixedRate(signUpdaterRunnable , 0, FileHandler.config.getUpdateTime(), TimeUnit.MINUTES);
-		
 	}
 	
 	public static void setSigns() {
 		PixelmonRanking.log.info("Updating Signs");
-		ArrayList<SignPlaceholder> signs =  FileHandler.config.getPlaceholders();
-			for(SignPlaceholder placeholderLoc : signs) {
+		ArrayList<SignPlaceholder> placeHolders =  FileHandler.config.getPlaceholders();
+			for(int i = 0 ; i < placeHolders.size() ; i++) {
+				SignPlaceholder placeholderLoc = placeHolders.get(i);
 				switch (placeholderLoc.getRank()) {
-				case Capture.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						Capture.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+					case Capture.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							Capture.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						Capture.returnTop10(null, Capture.name,placeholderLoc);
+						break;
+					case CraftBall.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							CraftBall.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						CraftBall.returnTop10(null, CraftBall.name,placeholderLoc);
+						break;
+					case DresseurSauvage.name:
+						DresseurSauvage.returnTop10(null, DresseurSauvage.name,placeholderLoc);
+						break;
+					case Evolution.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							Evolution.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						Evolution.returnTop10(null, Evolution.name,placeholderLoc);
+						break;
+					case ItemScore.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							ItemScore.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
 						return;
+					case Knockout.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							Knockout.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						Knockout.returnTop10(null, Knockout.name,placeholderLoc);
+						break;
+					case Oeuf.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							Oeuf.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						Oeuf.returnTop10(null, Oeuf.name,placeholderLoc);
+						break;
+					case Piaf.name:
+						Piaf.returnTop10(null, Piaf.name,placeholderLoc);
+						break;
+					case Ramassage.name:
+						Ramassage.returnTop10(null, Ramassage.name,placeholderLoc);
+						break;
+					case Recolte.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							Recolte.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						break;
+					default:
+						break;
 					}
-					Capture.returnTop10(null, Capture.name,placeholderLoc);
-					return;
-				case CraftBall.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						CraftBall.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
-						return;
-					}
-					CraftBall.returnTop10(null, CraftBall.name,placeholderLoc);
-					return;
-				case DresseurSauvage.name:
-					DresseurSauvage.returnTop10(null, DresseurSauvage.name,placeholderLoc);
-					return;
-				case Evolution.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						Evolution.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
-						return;
-					}
-					Evolution.returnTop10(null, Evolution.name,placeholderLoc);
-					return;
-				case ItemScore.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						ItemScore.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
-						return;
-					}
-					return;
-				case Knockout.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						Knockout.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
-						return;
-					}
-					Knockout.returnTop10(null, Knockout.name,placeholderLoc);
-					return;
-				case Oeuf.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						Oeuf.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
-						return;
-					}
-					Oeuf.returnTop10(null, Oeuf.name,placeholderLoc);
-					return;
-				case Piaf.name:
-					Piaf.returnTop10(null, Piaf.name,placeholderLoc);
-					return;
-				case Ramassage.name:
-					Ramassage.returnTop10(null, Ramassage.name,placeholderLoc);
-					return;
-				case Recolte.name:
-					if(!placeholderLoc.getSubrank().equals("")) {
-						Recolte.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
-						return;
-					}
-					return;
-				default:
-					break;
-				}
 			} 
 	}
 	
@@ -148,12 +148,12 @@ public class SignHandler {
 				if(tileEntitySign instanceof TileEntitySign) {
 					TileEntitySign sign = (TileEntitySign) tileEntitySign;
 					sign.markDirty();
-					sign.signText[0] = new TextComponentString(TextFormatting.RED+""+TextFormatting.STRIKETHROUGH+"------------");
-					sign.signText[3] = new TextComponentString(TextFormatting.RED+""+TextFormatting.STRIKETHROUGH+"------------");
+					sign.signText[0] = new TextComponentString(TextFormatting.WHITE+""+TextFormatting.STRIKETHROUGH+"------------");
+					sign.signText[3] = new TextComponentString(TextFormatting.WHITE+""+TextFormatting.STRIKETHROUGH+"------------");
 					PlayerScore playerScore = ranks.get(i);
 					if(playerScore!=null) {
 						sign.signText[1] = new TextComponentString(TextFormatting.GREEN+playerScore.getPlayer());
-						sign.signText[2] = new TextComponentString(TextFormatting.YELLOW+""+playerScore.getScore());
+						sign.signText[2] = new TextComponentString(TextFormatting.DARK_RED+""+playerScore.getScore());
 					} else {
 						sign.signText[1] = new TextComponentString(TextFormatting.GRAY+"No player");
 						sign.signText[2] = new TextComponentString(TextFormatting.GRAY+"");

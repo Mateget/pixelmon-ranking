@@ -12,6 +12,8 @@ import com.pixelmonmod.pixelmon.enums.items.EnumPokeballs;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import pixelmonranking.PixelmonRanking;
 import pixelmonranking.model.PlayerScore;
 import pixelmonranking.model.SignPlaceholder;
@@ -157,14 +159,14 @@ public class DatabaseHandler {
 	 
 	   }
 	public static ResultSet queryWithResult(String requet) {
-	       ResultSet resultat = null;
 	       try {
-	           resultat = statement.executeQuery(requet);
+	    	   ResultSet resultat = statement.executeQuery(requet);
+	    	   return resultat;
 	       } catch (SQLException e) {
 	           e.printStackTrace();
 	           System.out.println("Request error : " + requet);
 	       }
-	       return resultat;
+	       return null;
 	 
 	   }	
 	
@@ -185,7 +187,7 @@ public class DatabaseHandler {
 				statsString,
 				player.getName()
 		);
-		PixelmonRanking.log.info(req);
+		//PixelmonRanking.log.info(req);
 		Thread sqlThread = new Thread(() -> {
 		    query(req);
 		});
@@ -195,6 +197,11 @@ public class DatabaseHandler {
 	public static void reqTop10SendPlayer(String reqTop,String reqPlayer,EntityPlayerMP player,String title) {
 		Thread sqlThread = new Thread(() -> {
 		    ResultSet result = queryWithResult(reqTop);
+		    if(result==null) {
+		    	PixelmonRanking.log.info("Request Error : Top 10 " + title);
+		    	player.sendMessage(new TextComponentString(TextFormatting.RED+"Une erreur est survenu, contacez un administrateur"));
+		    	return;
+		    }
 		    TopRank ranks = new TopRank();
 		    try {
 				while(result.next()) {
@@ -202,6 +209,11 @@ public class DatabaseHandler {
 				}
 				if(player!=null && !ranks.hasPlayer(player.getName())) {
 			    	result = queryWithResult(String.format(reqPlayer,player.getName()));
+			    	if(result==null) {
+				    	PixelmonRanking.log.info("Request Error : " + player.getName() + " " + title);
+				    	player.sendMessage(new TextComponentString(TextFormatting.RED+"Une erreur est survenu, contacez un administrateur"));
+				    	return;
+				    }
 					while(result.next()) {
 						if(result.getString("Player")!=null) ranks.add(new PlayerScore(result.getString("Player"), result.getInt("score")));
 					}
@@ -217,6 +229,10 @@ public class DatabaseHandler {
 	public static void reqTop10Sign(String reqTop,SignPlaceholder placeholder) {
 		Thread sqlThread = new Thread(() -> {
 		    ResultSet result = queryWithResult(reqTop);
+		    if(result==null) {
+		    	PixelmonRanking.log.info("Request Error : " + placeholder.getRank() + " " + placeholder.getSubrank());
+		    	return;
+		    }
 		    TopRank ranks = new TopRank();
 		    try {
 				while(result.next()) {

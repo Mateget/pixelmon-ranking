@@ -24,6 +24,8 @@ import pixelmonranking.database.DatabaseHandler;
 
 public class PixelmonEvents {
 	
+	private final boolean logSQL = false;
+	
 	public PixelmonEvents() {
 		Pixelmon.EVENT_BUS.register(this);
 	}
@@ -41,7 +43,7 @@ public class PixelmonEvents {
 				event.pokeball.getName(),
 				event.getPokemon().getPokemonData().getForm()
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -57,7 +59,7 @@ public class PixelmonEvents {
 				booleanToInt(((EntityPixelmon) event.wpp.getEntity()).getPokemonData().isLegendary()),
 				((EntityPixelmon) event.wpp.getEntity()).getPokemonData().getForm()
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -73,7 +75,7 @@ public class PixelmonEvents {
 				booleanToInt(event.pokemon.isShiny()),
 				event.pokemon.getForm()
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -87,7 +89,7 @@ public class PixelmonEvents {
 				event.pokemon.getDisplayName().getUnformattedText(),
 				booleanToInt(event.pokemon.getPokemonData().isShiny())
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -99,7 +101,7 @@ public class PixelmonEvents {
 		final String req = String.format("INSERT INTO Shrine(Player) VALUES('%s');", 
 				event.player.getName()
 	    		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -115,7 +117,7 @@ public class PixelmonEvents {
 				"Rare Candy"
 
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -129,7 +131,7 @@ public class PixelmonEvents {
 				event.getPlayer().getName(),
 				"Azure Flute"
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -143,7 +145,7 @@ public class PixelmonEvents {
 				event.getPlayer().getName(),
 				"Red Chain"
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -156,7 +158,7 @@ public class PixelmonEvents {
 				event.player.getName().getUnformattedText(),
 				event.stack.getDisplayName()
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -169,7 +171,7 @@ public class PixelmonEvents {
 				event.player.getName(),
 				event.apricorn.name()
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -182,7 +184,7 @@ public class PixelmonEvents {
 				event.player.getName(),
 				event.berry.name()
 		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});
@@ -194,7 +196,7 @@ public class PixelmonEvents {
 		final String req =String.format("INSERT INTO BeatTrainer(Player) VALUES('%s');", 
 				event.player.getName()
 	    		);
-		PixelmonRanking.log.info(req);		
+		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {
 		    DatabaseHandler.query(req);
 		});

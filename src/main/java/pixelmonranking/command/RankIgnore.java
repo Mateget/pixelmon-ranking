@@ -32,7 +32,8 @@ public class RankIgnore extends CommandBase {
     		return;
     	}
     	final String request = String.format("INSERT INTO Ignore(Player) VALUES('%s');", args[0]);
-		PixelmonRanking.log.info(request);
+    	sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Player added rank ignore"));
+		//PixelmonRanking.log.info(request);
 		DatabaseHandler.threadQuery(request);
     	return;
     }
