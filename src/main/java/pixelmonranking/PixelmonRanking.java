@@ -11,10 +11,10 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import pixelmonranking.command.IgnoreCommand;
-import pixelmonranking.command.RankCommand;
-import pixelmonranking.command.ReloadCommand;
-import pixelmonranking.command.ResetEventCommand;
+import pixelmonranking.command.RankIgnore;
+import pixelmonranking.command.Rank;
+import pixelmonranking.command.RankDisplay;
+import pixelmonranking.command.RankReload;
 import pixelmonranking.config.FileHandler;
 import pixelmonranking.database.DatabaseHandler;
 import pixelmonranking.event.MinecraftEvents;
@@ -65,10 +65,10 @@ public class PixelmonRanking {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent e) {
-    	e.registerServerCommand(new IgnoreCommand());
-        e.registerServerCommand(new RankCommand());
-        e.registerServerCommand(new ReloadCommand());
-        e.registerServerCommand(new ResetEventCommand());
+    	e.registerServerCommand(new RankIgnore());
+        e.registerServerCommand(new Rank());
+        e.registerServerCommand(new RankReload());
+        e.registerServerCommand(new RankDisplay());
     }
 
 }

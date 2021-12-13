@@ -2,22 +2,23 @@ package pixelmonranking.model;
 
 import java.util.ArrayList;
 
+import pixelmonranking.PixelmonRanking;
+
 public class TopRank {
 	
 	private ArrayList<PlayerScore> players = new ArrayList<PlayerScore>();
-	private String sender;
 	
-	public TopRank(String sender) {
-		this.sender =sender;
+	public TopRank() {
+		
 	}
 	
 	public void add(PlayerScore playerscore) {
 		players.add(playerscore);
 	}
 	
-	public boolean hasPlayer() {
+	public boolean hasPlayer(String playerName) {
 		for(PlayerScore playerscore : players) {
-			if(playerscore.getPlayer().equals(this.sender)) return true;
+			if(playerscore.getPlayer().equals(playerName)) return true;
 		}
 		return false;
 		
@@ -32,6 +33,7 @@ public class TopRank {
 	}
 	
 	public PlayerScore get(int i) {
+		if(i>=players.size()) return null;
 		return players.get(i);
 	}
 

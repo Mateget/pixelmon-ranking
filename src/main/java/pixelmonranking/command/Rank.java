@@ -16,15 +16,16 @@ import pixelmonranking.command.ranksub.Capture;
 import pixelmonranking.command.ranksub.CraftBall;
 import pixelmonranking.command.ranksub.DresseurSauvage;
 import pixelmonranking.command.ranksub.Evolution;
-import pixelmonranking.command.ranksub.Item;
+import pixelmonranking.command.ranksub.ItemScore;
 import pixelmonranking.command.ranksub.Knockout;
 import pixelmonranking.command.ranksub.Oeuf;
 import pixelmonranking.command.ranksub.Piaf;
 import pixelmonranking.command.ranksub.Ramassage;
 import pixelmonranking.command.ranksub.Recolte;
+import pixelmonranking.database.DatabaseHandler;
 import pixelmonranking.utils.PermissionUtils;
 
-public class RankCommand extends CommandBase {
+public class Rank extends CommandBase {
 
     @Override
     public String getName() {
@@ -38,7 +39,7 @@ public class RankCommand extends CommandBase {
         		CraftBall.name,
         		DresseurSauvage.name,
         		Evolution.name,
-        		Item.name,
+        		ItemScore.name,
         		Knockout.name,
         		Oeuf.name,
         		Piaf.name,
@@ -54,60 +55,61 @@ public class RankCommand extends CommandBase {
     		switch (args[0].toLowerCase()) {
 			case Capture.name:
 				if(args.length==2) {
-					Capture.returnTop10(player, args[1]);
+					Capture.returnTop10(player, args[1],null);
 					return;
 				}
-				Capture.returnTop10(player, Capture.name);
+				Capture.returnTop10(player, Capture.name,null);
 				return;
 			case CraftBall.name:
+				DatabaseHandler.updatePlayerCraftedBalls(player);
 				if(args.length==2) {
-					CraftBall.returnTop10(player, args[1]);
+					CraftBall.returnTop10(player, args[1],null);
 					return;
 				}
-				CraftBall.returnTop10(player, CraftBall.name);
+				CraftBall.returnTop10(player, CraftBall.name,null);
 				return;
 			case DresseurSauvage.name:
-				DresseurSauvage.returnTop10(player, DresseurSauvage.name);
+				DresseurSauvage.returnTop10(player, DresseurSauvage.name,null);
 				return;
 			case Evolution.name:
 				if(args.length==2) {
-					Evolution.returnTop10(player, args[1]);
+					Evolution.returnTop10(player, args[1],null);
 					return;
 				}
-				Evolution.returnTop10(player, Evolution.name);
+				Evolution.returnTop10(player, Evolution.name,null);
 				return;
-			case Item.name:
+			case ItemScore.name:
 				if(args.length==2) {
-					Item.returnTop10(player, args[1]);
+					ItemScore.returnTop10(player, args[1],null);
 					return;
 				}
 				
 				String subCommand = "bonbon|chainerouge|fluteazure|masterball";
-				sender.sendMessage(new TextComponentString(TextFormatting.RED+String.format("Usage: /rank %s <%s>",Item.name,subCommand)));
+				sender.sendMessage(new TextComponentString(TextFormatting.RED+String.format("Usage: /rank %s <%s>",ItemScore.name,subCommand)));
 				return;
 			case Knockout.name:
 				if(args.length==2) {
-					Knockout.returnTop10(player, args[1]);
+					Knockout.returnTop10(player, args[1],null);
 					return;
 				}
-				Knockout.returnTop10(player, Knockout.name);
+				Knockout.returnTop10(player, Knockout.name,null);
 				return;
 			case Oeuf.name:
 				if(args.length==2) {
-					Oeuf.returnTop10(player, args[1]);
+					Oeuf.returnTop10(player, args[1],null);
 					return;
 				}
-				Oeuf.returnTop10(player, Oeuf.name);
+				Oeuf.returnTop10(player, Oeuf.name,null);
 				return;
 			case Piaf.name:
-				Piaf.returnTop10(player, Piaf.name);
+				Piaf.returnTop10(player, Piaf.name,null);
 				return;
 			case Ramassage.name:
-				Ramassage.returnTop10(player, Ramassage.name);
+				Ramassage.returnTop10(player, Ramassage.name,null);
 				return;
 			case Recolte.name:
 				if(args.length==2) {
-					Recolte.returnTop10(player, args[1]);
+					Recolte.returnTop10(player, args[1],null);
 					return;
 				}
 				String subCommand2 = "baies|noigrumes";
@@ -130,7 +132,7 @@ public class RankCommand extends CommandBase {
 			autocompleteList.add(CraftBall.name);
 			autocompleteList.add(DresseurSauvage.name);
 			autocompleteList.add(Evolution.name);
-			autocompleteList.add(Item.name);
+			autocompleteList.add(ItemScore.name);
 			autocompleteList.add(Knockout.name);
 			autocompleteList.add(Oeuf.name);
 			autocompleteList.add(Piaf.name);
@@ -148,8 +150,8 @@ public class RankCommand extends CommandBase {
 				return getListOfStringsMatchingLastWord(args, DresseurSauvage.subcommand);
 			case Evolution.name:
 				return getListOfStringsMatchingLastWord(args, Evolution.subcommand);
-			case Item.name:
-				return getListOfStringsMatchingLastWord(args, Item.subcommand);
+			case ItemScore.name:
+				return getListOfStringsMatchingLastWord(args, ItemScore.subcommand);
 			case Knockout.name:
 				return getListOfStringsMatchingLastWord(args, Knockout.subcommand);
 			case Oeuf.name:
@@ -167,10 +169,6 @@ public class RankCommand extends CommandBase {
 		return getListOfStringsMatchingLastWord(args, autocompleteList);
 	}
 
-	@Override
-	public boolean isUsernameIndex(String[] args, int index) {
-		return false;
-	}
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {

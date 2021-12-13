@@ -6,7 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import pixelmonranking.database.DatabaseCraft;
+import pixelmonranking.database.DatabaseHandler;
 
 public class MinecraftEvents {
 		
@@ -16,11 +16,11 @@ public class MinecraftEvents {
 	
 	@SubscribeEvent
 	public void on(PlayerLoggedInEvent event){
-		DatabaseCraft.updatePlayerCraftedBalls( (EntityPlayerMP) event.player);
+		DatabaseHandler.updatePlayerCraftedBalls( (EntityPlayerMP) event.player);
 	}
 	
 	@SubscribeEvent
 	public void on(PlayerLoggedOutEvent event){
-		DatabaseCraft.updatePlayerCraftedBalls( (EntityPlayerMP) event.player);
+		DatabaseHandler.updatePlayerCraftedBalls( (EntityPlayerMP) event.player);
 	}
 }

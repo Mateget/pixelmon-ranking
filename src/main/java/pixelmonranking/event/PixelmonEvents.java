@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.events.BerryEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
+import com.pixelmonmod.pixelmon.api.events.PickupEvent;
 import com.pixelmonmod.pixelmon.api.events.PlayerActivateShrineEvent;
 import com.pixelmonmod.pixelmon.api.events.RareCandyEvent;
 import com.pixelmonmod.pixelmon.api.events.legendary.ArceusEvent;
@@ -63,7 +64,7 @@ public class PixelmonEvents {
 		sqlThread.start();
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void onRetriveEgg(EggHatchEvent event) {
 		final String req = String.format("INSERT INTO Hatch(Player,Pokemon,IsPerfect,Shiny,Form) VALUES('%s','%s',%d,%d,%d);", 
 				event.pokemon.getOriginalTrainer(),
@@ -77,7 +78,7 @@ public class PixelmonEvents {
 		    DatabaseHandler.query(req);
 		});
 		sqlThread.start();
-	}*/
+	}
 	
 	@SubscribeEvent
 	public void onEvolve(EvolveEvent.PostEvolve event) {
@@ -149,7 +150,7 @@ public class PixelmonEvents {
 		sqlThread.start();
 	}
 		
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void onPickup(PickupEvent event) {
 		final String req =String.format("INSERT INTO Pickup(Player,Item) VALUES('%s','%s');", 
 				event.player.getName().getUnformattedText(),
@@ -160,7 +161,7 @@ public class PixelmonEvents {
 		    DatabaseHandler.query(req);
 		});
 		sqlThread.start();
-	}*/
+	}
 	
 	@SubscribeEvent
 	public void onApricornHarvest(ApricornEvent.PickApricorn event) {

@@ -8,7 +8,15 @@ import java.sql.Statement;
 
 import com.pixelmonmod.pixelmon.enums.items.EnumPokeballs;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.stats.StatBase;
+import net.minecraft.stats.StatList;
 import pixelmonranking.PixelmonRanking;
+import pixelmonranking.model.PlayerScore;
+import pixelmonranking.model.SignPlaceholder;
+import pixelmonranking.model.TopRank;
+import pixelmonranking.placeholder.SignHandler;
+import pixelmonranking.utils.ChatUtils;
 
 public class DatabaseHandler {
 
@@ -158,5 +166,67 @@ public class DatabaseHandler {
 	       return resultat;
 	 
 	   }	
+	
+	public static void updatePlayerCraftedBalls(EntityPlayerMP player) {
+		String balls = "";
+		String stats = "";
+		for(EnumPokeballs ball : EnumPokeballs.values()) {
+			balls += String.format(",%s", ball.name().replace(" ", ""));
+			StatBase statbase = StatList.getCraftStats(ball.getItem());
+			if( statbase!=null ) stats += String.format(",%d", player.getStatFile().readStat(statbase));
+			else stats += String.format(",%d", 0);
+		}
+		final String ballsString = balls;
+		final String statsString = stats;
+		final String req = String.format("REPLACE INTO CraftBall(Player%s) VALUES('%s'%s);", 
+				ballsString,
+				player.getName(),
+				statsString,
+				player.getName()
+		);
+		PixelmonRanking.log.info(req);
+		Thread sqlThread = new Thread(() -> {
+		    query(req);
+		});
+		sqlThread.start();
+	}
+	
+	public static void reqTop10SendPlayer(String reqTop,String reqPlayer,EntityPlayerMP player,String title) {
+		Thread sqlThread = new Thread(() -> {
+		    ResultSet result = queryWithResult(reqTop);
+		    TopRank ranks = new TopRank();
+		    try {
+				while(result.next()) {
+					ranks.add(new PlayerScore(result.getString("Player"), result.getInt("score")));
+				}
+				if(player!=null && !ranks.hasPlayer(player.getName())) {
+			    	result = queryWithResult(String.format(reqPlayer,player.getName()));
+					while(result.next()) {
+						if(result.getString("Player")!=null) ranks.add(new PlayerScore(result.getString("Player"), result.getInt("score")));
+					}
+			    }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		   if(player!=null ) ChatUtils.sendRank(player, ranks, title);
+		});
+		sqlThread.start();
+	}
+	
+	public static void reqTop10Sign(String reqTop,SignPlaceholder placeholder) {
+		Thread sqlThread = new Thread(() -> {
+		    ResultSet result = queryWithResult(reqTop);
+		    TopRank ranks = new TopRank();
+		    try {
+				while(result.next()) {
+					ranks.add(new PlayerScore(result.getString("Player"), result.getInt("score")));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		  SignHandler.updateSign(ranks, placeholder);
+		});
+		sqlThread.start();
+	}
 	
 }

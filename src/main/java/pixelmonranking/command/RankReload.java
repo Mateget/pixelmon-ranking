@@ -16,39 +16,33 @@ import pixelmonranking.PixelmonRanking;
 import pixelmonranking.config.FileHandler;
 import pixelmonranking.utils.PermissionUtils;
 
-public class ReloadCommand extends CommandBase {
+public class RankReload extends CommandBase {
 
     @Override
     public String getName() {
-        return "pixelmonranking";
+        return "reloadrank";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "&cUsage: /pixelmonranking reload";
+        return "&cUsage: /reloadrank ";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            FileHandler.readConfig();
-            sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Config reloaded"));
-            return;
-        }
-        sender.sendMessage(new TextComponentString(TextFormatting.RED + "Usage: /pixelmonranking reload"));
+    	FileHandler.readConfig();
+        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Config reloaded"));
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         List<String> possibleArgs = new ArrayList<>();
-        if (args.length == 1)
-            possibleArgs.add("reload");
         return getListOfStringsMatchingLastWord(args, possibleArgs);
     }
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return PermissionUtils.canUse(PixelmonRanking.MOD_ID + ".reload", sender);
+        return PermissionUtils.canUse(PixelmonRanking.MOD_ID + ".reloadrank", sender);
     }
 
 

@@ -13,7 +13,7 @@ import pixelmonranking.PixelmonRanking;
 import pixelmonranking.database.DatabaseHandler;
 import pixelmonranking.utils.PermissionUtils;
 
-public class IgnoreCommand extends CommandBase {
+public class RankIgnore extends CommandBase {
 
     @Override
     public String getName() {

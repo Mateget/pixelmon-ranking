@@ -10,7 +10,7 @@ public class SaveDataUtils extends WorldSavedData {
 	
 	private NBTTagCompound data;
 	
-	private static final String DATA_NAME = PixelmonRanking.MOD_ID + "_HUNT_DATA";
+	private static final String DATA_NAME = PixelmonRanking.MOD_ID + "_RANK_PLACEHOLDER";
 	
 
     public SaveDataUtils() {
@@ -24,34 +24,34 @@ public class SaveDataUtils extends WorldSavedData {
     @Override
 	public void readFromNBT(NBTTagCompound nbt) {
     	
-		this.data = nbt.getCompoundTag("huntevent");
+		this.data = nbt.getCompoundTag("rankplaceholder");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		
-		nbt.setTag("huntevent", data);
+		nbt.setTag("rankplaceholder", data);
 		return nbt;
 	}
     
     public NBTTagCompound getData() {
     	
-    	if(!data.hasKey("huntevent")) {
+    	if(!data.hasKey("rankplaceholder")) {
     		return new NBTTagCompound();
     	} else {
     	
-    		return data.getCompoundTag("huntevent");
+    		return data.getCompoundTag("rankplaceholder");
     	}
         
     }
     
     public void setData(NBTTagCompound nbtTagCompound) {
-    	data.setTag("huntevent", nbtTagCompound);
+    	data.setTag("rankplaceholder", nbtTagCompound);
     	this.markDirty();
     }
     
     public void resetData() {
-    	data.setTag("huntevent", new NBTTagCompound());
+    	data.setTag("rankplaceholder", new NBTTagCompound());
     	this.markDirty();
     }
     
