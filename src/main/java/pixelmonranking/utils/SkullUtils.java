@@ -39,11 +39,17 @@ public class SkullUtils {
 				for (String line; (line = reader.readLine()) != null;) {
 					result.append(line);
 				}
-				JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
+				JsonElement response = new JsonParser().parse(result.toString());
+				if(!response.isJsonObject()) {
+					//PixelmonRanking.log.info("No mojang profile for : " + username);
+					return null;
+				}
+				JsonObject jsonObject = response.getAsJsonObject();
+				
 				id = jsonObject.get("id");
 				
 				if(id==null) {
-					PixelmonRanking.log.info("id is null" +id);
+					//PixelmonRanking.log.info("id is null" +id);
 					return null;
 				}
 				

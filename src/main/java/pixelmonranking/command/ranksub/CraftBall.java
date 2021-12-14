@@ -67,7 +67,7 @@ public class CraftBall {
 			}
 			reqPlayer = "SELECT CraftBall.player, (LoveBall) AS score FROM CraftBall "
 					+ "WHERE CraftBall.player=='%s';";
-			DatabaseHandler.reqTop10SendPlayer(reqTop,reqPlayer,playerSender,"Le plus d'Hyper ball crafté");
+			DatabaseHandler.reqTop10SendPlayer(reqTop,reqPlayer,playerSender,"Le plus de Love Ball crafté");
 			return;
 		default:
 			return;
