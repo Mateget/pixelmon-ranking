@@ -156,7 +156,7 @@ public class PixelmonEvents {
 	public void onPickup(PickupEvent event) {
 		final String req =String.format("INSERT INTO Pickup(Player,Item) VALUES('%s','%s');", 
 				event.player.getName().getUnformattedText(),
-				event.stack.getDisplayName()
+				event.stack.getDisplayName().replace("'", "")
 		);
 		if(logSQL) PixelmonRanking.log.info(req);		
 		Thread sqlThread = new Thread(() -> {

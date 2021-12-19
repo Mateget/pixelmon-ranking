@@ -14,7 +14,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
-import pixelmonranking.PixelmonRanking;
 
 public class SkullUtils {
 	
