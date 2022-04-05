@@ -28,7 +28,7 @@ public class FileHandler {
             config = gson.fromJson(br, Config.class);
             br.close();
         } catch (Exception e) {
-            PixelmonRanking.log.error("Failed to read Eggcellent config:\r\n" + e.getMessage());
+            PixelmonRanking.log.error("Failed to read config:\r\n" + e.getMessage());
         }
     }
 
@@ -42,7 +42,7 @@ public class FileHandler {
             writer.write(json);
             writer.close();
         } catch (Exception e) {
-        	PixelmonRanking.log.error("Failed to save Eggcellent config:\r\n" + e.getMessage());
+        	PixelmonRanking.log.error("Failed to save config:\r\n" + e.getMessage());
         }
     }
 
