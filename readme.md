@@ -12,4 +12,5 @@ Mod to rank players based on differents activities
  - Birds legs captured
  - Pickup
 
+I made it for a server I work on you may enconter issues trying it feel free to report issues
 
