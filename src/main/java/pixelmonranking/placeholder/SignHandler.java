@@ -33,6 +33,7 @@ import pixelmonranking.command.ranksub.Evolution;
 import pixelmonranking.command.ranksub.ItemScore;
 import pixelmonranking.command.ranksub.Knockout;
 import pixelmonranking.command.ranksub.Oeuf;
+import pixelmonranking.command.ranksub.Peche;
 import pixelmonranking.command.ranksub.Piaf;
 import pixelmonranking.command.ranksub.Ramassage;
 import pixelmonranking.command.ranksub.Recolte;
@@ -117,6 +118,12 @@ public class SignHandler {
 					case Recolte.name:
 						if(!placeholderLoc.getSubrank().equals("")) {
 							Recolte.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
+							break;
+						}
+						break;
+					case Peche.name:
+						if(!placeholderLoc.getSubrank().equals("")) {
+							Peche.returnTop10(null, placeholderLoc.getSubrank(),placeholderLoc);
 							break;
 						}
 						break;

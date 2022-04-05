@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.events.BerryEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.EggHatchEvent;
 import com.pixelmonmod.pixelmon.api.events.EvolveEvent;
+import com.pixelmonmod.pixelmon.api.events.FishingEvent;
 import com.pixelmonmod.pixelmon.api.events.PickupEvent;
 import com.pixelmonmod.pixelmon.api.events.PlayerActivateShrineEvent;
 import com.pixelmonmod.pixelmon.api.events.RareCandyEvent;
@@ -17,6 +18,8 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pixelmonranking.PixelmonRanking;
 import pixelmonranking.database.DatabaseHandler;
@@ -28,6 +31,22 @@ public class PixelmonEvents {
 	
 	public PixelmonEvents() {
 		Pixelmon.EVENT_BUS.register(this);
+	}
+	
+	@SubscribeEvent
+	public void onFishReel(FishingEvent.Reel event) {
+		if (event.optEntity.isPresent()) {
+			final String req = String.format("INSERT INTO Peche(Player,Contenu,Pokemon) VALUES('%s','%s',%d);", 
+					event.player.getName(),
+					event.optEntity.get().getDisplayName().getFormattedText(),
+					booleanToInt(event.isPokemon())
+			);
+			if(logSQL) PixelmonRanking.log.info(req);		
+			Thread sqlThread = new Thread(() -> {
+			    DatabaseHandler.query(req);
+			});
+			sqlThread.start();
+		}
 	}
 	
 	

@@ -55,6 +55,13 @@ public class DatabaseHandler {
 	}
 	
 	public static void init() {
+		
+		query("CREATE TABLE IF NOT EXISTS Peche"
+				+ "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "Player varchar(40),"
+				+ "Contenu varchar(255),"
+				+ "Pokemon boolean"
+				+ ");");
 
 		query("CREATE TABLE IF NOT EXISTS Capture"
 				+ "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"

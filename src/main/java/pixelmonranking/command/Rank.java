@@ -19,6 +19,7 @@ import pixelmonranking.command.ranksub.Evolution;
 import pixelmonranking.command.ranksub.ItemScore;
 import pixelmonranking.command.ranksub.Knockout;
 import pixelmonranking.command.ranksub.Oeuf;
+import pixelmonranking.command.ranksub.Peche;
 import pixelmonranking.command.ranksub.Piaf;
 import pixelmonranking.command.ranksub.Ramassage;
 import pixelmonranking.command.ranksub.Recolte;
@@ -34,7 +35,7 @@ public class Rank extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return TextFormatting.RED+String.format("Usage: /rank <%s|%s|%s|%s|%s|%s|%s|%s|%s|%s>", 
+        return TextFormatting.RED+String.format("Usage: /rank <%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s>", 
         		Capture.name,
         		CraftBall.name,
         		DresseurSauvage.name,
@@ -44,7 +45,8 @@ public class Rank extends CommandBase {
         		Oeuf.name,
         		Piaf.name,
         		Ramassage.name,
-        		Recolte.name
+        		Recolte.name,
+        		Peche.name
         		);
     }
 
@@ -115,6 +117,13 @@ public class Rank extends CommandBase {
 				String subCommand2 = "baies|noigrumes";
 				sender.sendMessage(new TextComponentString(TextFormatting.RED+String.format("Usage: /rank %s <%s>",Recolte.name,subCommand2)));
 				return;
+			case Peche.name:
+				if(args.length==2) {
+					Peche.returnTop10(player, args[1],null);
+					return;
+				}
+				Peche.returnTop10(player, Peche.name,null);
+				return;
 			default:
 				sender.sendMessage(new TextComponentString(getUsage(sender)));
 				break;
@@ -140,6 +149,7 @@ public class Rank extends CommandBase {
 			autocompleteList.add(Piaf.name);
 			autocompleteList.add(Ramassage.name);
 			autocompleteList.add(Recolte.name);
+			autocompleteList.add(Peche.name);
 			return getListOfStringsMatchingLastWord(args, autocompleteList);
 		}
 		if(args.length ==2 ) {
@@ -164,6 +174,8 @@ public class Rank extends CommandBase {
 				return getListOfStringsMatchingLastWord(args, Ramassage.subcommand);
 			case Recolte.name:
 				return getListOfStringsMatchingLastWord(args, Recolte.subcommand);
+			case Peche.name:
+				return getListOfStringsMatchingLastWord(args, Peche.subcommand);
 			default:
 				break;
 			}
