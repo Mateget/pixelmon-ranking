@@ -146,6 +146,7 @@ public class DatabaseHandler {
 				+ "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "Player varchar(40)"
 				+ ");");
+		query("REPLACE INTO Ignore(Player) VALUES('ImpossiblePlayerIGuess');");
 		
 	}
 	
