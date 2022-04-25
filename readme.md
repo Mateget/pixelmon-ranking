@@ -13,5 +13,5 @@ Mod to rank players based on differents activities
  - Pickup
  - fishing
 
-You may enconter issues trying this feel free to report issues
+You may enconter issues trying this feel free to report them
 
